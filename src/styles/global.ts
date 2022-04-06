@@ -11,6 +11,7 @@ export const GlobalStyled = createGlobalStyle`
     --text-body:#969cb3;
     --background:#F0F2F5;
     --shape:#ffffff;
+    --green:#33cc95;
 }
 
 *{
