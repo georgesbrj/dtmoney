@@ -1,12 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { Container } from "./styles";
+ 
 
 
-export function TransactionsTable (){
+
+interface Tranasaction{
+    id: number;
+    title:string;
+    amount: number;
+    type: string;
+    category: string;
+    createdAt:string;
+}
+
+export function TransactionsTable (){    
+
+const [transaction,setTransaction] = useState<Tranasaction[]>([]) 
+
  useEffect(()=>{
     api.get('transactions')
-       .then(response => console.log(response.data))
+       .then(response => setTransaction(response.data.transactions))
  },[]);
 
 
@@ -22,18 +36,21 @@ return (
               </tr>
           </thead>
           <tbody>
-              <tr>
-                  <td>Desenvolvimento de website</td>
-                  <td className="deposit" >R$12.0000</td>
-                  <td>Desenvolvimento</td>
-                  <td>28/02/2022</td>
-              </tr>
-              <tr>
-                  <td>Desenvolvimento de website</td>
-                  <td className="withdraw">-R$2.0000</td>
-                  <td>Desenvolvimento</td>
-                  <td>28/02/2022</td>
-              </tr>             
+              {transaction.map(transaction => {
+                return (
+                    <tr key={transaction.id}>
+                        <td>{transaction.title}</td>
+                        <td className={transaction.type} >
+                            {new Intl.NumberFormat('pt-BR',{
+                                style:'currency',
+                                currency:'BRL'
+                                }).format(transaction.amount)}
+                        </td>
+                        <td>{transaction.category}</td>
+                        <td>{new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.createdAt))}</td>
+                    </tr>
+                );
+              })}                         
           </tbody>
       </table>
   </Container>    
